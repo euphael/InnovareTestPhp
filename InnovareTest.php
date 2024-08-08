@@ -34,6 +34,16 @@ if ($result->num_rows > 0) {
             $coluna = 'v' . $i;
             echo "<td>" . $row[$coluna] . "</td>";
         }
+        if ($row['v4'] == 2 && $row['v5'] !== NULL) {
+            echo "<td colspan='17' style='color:red;'>Erro: Se v4 for igual a 2, v5 precisa ser NULL</td>";
+        } else if ($row['v5'] == 1) {
+            for ($i = 6; $i < 7; $i++) {
+                if ($row['v' . $i] !== NULL) {
+                    echo "<td colspan='17' style='color:red;'>Erro: v$i precisa ser NULL porque v5 = 1</td>";
+                }
+            }
+            
+        }
         echo "</tr>";
     }
     echo "</table>";
