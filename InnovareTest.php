@@ -25,12 +25,12 @@ if ($result->num_rows > 0) {
     for ($i = 1; $i <= 16; $i++) {
         echo "<th>v$i</th>";
     }
-    echo "</tr>";
+    echo "<th>Erros</th></tr>";
 
     while ($row = $result->fetch_assoc()) {
         echo "<tr>";
         echo "<td>" . $row["id"] . "</td>";
-        $error = '';
+        $errors = [];
 
         for ($i = 1; $i <= 16; $i++) {
             $coluna = 'v' . $i;
@@ -39,58 +39,75 @@ if ($result->num_rows > 0) {
 
         // Verifica se v15 e v16 são iguais
         if ($row['v15'] == $row['v16']) {
-            $error = 'Erro: v15 é a mesma resposta de v16.';
-        } else if ($row['v1'] == 2) {
+            $errors[] = 'Erro: v15 é a mesma resposta de v16.';
+        }
+        if ($row['v1'] == 2) {
             // Se v1 for 2, verifica se v2 a v6 são NULL
             for ($i = 2; $i <= 6; $i++) {
                 $coluna = 'v' . $i;
                 if (!is_null($row[$coluna])) {
-                    $error = 'Erro: v1 é 2, mas v' . $i . ' não é NULL';
-                    break;
+                    $errors[] = 'Erro: v1 é 2, mas v' . $i . ' não é NULL';
                 }
             }
-        } else if ($row['v2'] == 2) {
+        }
+        if ($row['v1'] == 1 && is_null($row['v2'])) {
+            // Se v1 for 1, verifica se v2 está preenchido
+            $errors[] = 'Erro: v1 é 1, mas v2 não está preenchido.';
+        }
+        if ($row['v2'] == 2) {
             // Se v2 for 2, verifica se v3 a v6 são NULL
             for ($i = 3; $i <= 6; $i++) {
                 $coluna = 'v' . $i;
                 if (!is_null($row[$coluna])) {
-                    $error = 'Erro: v2 é 2, mas v' . $i . ' não é NULL';
-                    break;
+                    $errors[] = 'Erro: v2 é 2, mas v' . $i . ' não é NULL';
                 }
             }
-        } else if ($row['v4'] == 2 && !is_null($row['v5'])) {
+        }
+        if ($row['v2'] == 1) {
+            // Se v2 for 1, verifica se v3 e v4 estão preenchidos
+            if (is_null($row['v3']) || is_null($row['v4'])) {
+                $errors[] = 'Erro: v2 é 1, mas v3 ou v4 não estão preenchidos.';
+            }
+        }
+        if ($row['v4'] == 2 && !is_null($row['v5'])) {
             // Se v4 for 2, verifica se v5 é NULL
-            $error = 'Erro: v4 é 2, mas v5 não é NULL';
-        } else if ($row['v5'] == 1) {
+            $errors[] = 'Erro: v4 é 2, mas v5 não é NULL';
+        }
+        if ($row['v5'] == 1) {
             // Se v5 for 1, verifica se v6 e v7 são NULL
             for ($i = 6; $i <= 7; $i++) {
                 $coluna = 'v' . $i;
                 if (!is_null($row[$coluna])) {
-                    $error = 'Erro: v5 é 1, mas v' . $i . ' não é NULL';
-                    break;
+                    $errors[] = 'Erro: v5 é 1, mas v' . $i . ' não é NULL';
                 }
             }
-        } else if ($row['v7'] == 2) {
+        }
+        if ($row['v5'] == 2 || $row['v5'] == 3) {
+            // Se v5 for 2 ou 3, verifica se v6 está preenchido
+            if (is_null($row['v6'])) {
+                $errors[] = 'Erro: v5 é ' . $row['v5'] . ', mas v6 não está preenchido.';
+            }
+        }
+        if ($row['v7'] == 2) {
             // Se v7 for 2, verifica se v8 e v9 são NULL
             for ($i = 8; $i <= 9; $i++) {
                 $coluna = 'v' . $i;
                 if (!is_null($row[$coluna])) {
-                    $error = 'Erro: v7 é 2, mas v' . $i . ' não é NULL';
-                    break;
+                    $errors[] = 'Erro: v7 é 2, mas v' . $i . ' não é NULL';
                 }
             }
-        } else if ($row['v8'] == 2) {
+        }
+        if ($row['v8'] == 2) {
             // Se v8 for 2, verifica se v9 a v13 são NULL
             for ($i = 9; $i <= 13; $i++) {
                 $coluna = 'v' . $i;
                 if (!is_null($row[$coluna])) {
-                    $error = 'Erro: v8 é 2, mas v' . $i . ' não é NULL';
-                    break;
+                    $errors[] = 'Erro: v8 é 2, mas v' . $i . ' não é NULL';
                 }
             }
         }
 
-        echo "<td>" . $error . "</td>"; // Exibição da mensagem de erro
+        echo "<td>" . implode('<br>', $errors) . "</td>"; // Exibição das mensagens de erro acumuladas
         echo "</tr>";
     }
     echo "</table>";
@@ -100,3 +117,4 @@ if ($result->num_rows > 0) {
 
 // Fechando a conexão
 $conn->close();
+?>
