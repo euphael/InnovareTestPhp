@@ -1,6 +1,6 @@
-<h2> Este foi um desafio em PHP feito para a INNOVARE </h2>
+# Este foi um desafio em PHP feito para a INNOVARE 
 
-<h3> Como funciona?</h3>
+## Como funciona?
 
 O questionário traz instruções de pulo para o entrevistador dependendo das respostas recebidas. Por exemplo, se na pergunta 1 uma pessoa diz não ter celular, o entrevistador deve pular para a pergunta 7, porque não faz sentido aplicar as perguntas 2 a 6 para pessoas que não tenham celular.
 
